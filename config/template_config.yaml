@@ -1,3 +1,9 @@
+# Options
+flag_fetch_data: False
+device_to_plot: 15
+flag_debug_hourly_data: False
+
+# Time Window
 start_date_day: 27
 start_date_month: 5
 start_date_year: 2025
@@ -8,4 +14,3 @@ end_date_month: 8
 end_date_year: 2025
 end_date_hour: 8
 end_date_minute: 0
-device_to_plot: 15

@@ -75,7 +75,7 @@ def get_daily_cough_count_telemetry(auth_token, device_id, start_ts, end_ts, lim
     telemetry = response_data.get('totalCoughCount', []) if is_barn else response_data.get('dailyCoughCount', [])
     return telemetry
 
-def generate_cough_count_csv(start_date_timestamp, end_date_timestamp):
+def generate_cough_count_csv(start_timestamp_ms, end_timestamp_ms):
     # Get thingsboard auth token for all future requests
     thingsboard_auth_token = get_thingsboard_auth_token()
 
@@ -98,10 +98,11 @@ def generate_cough_count_csv(start_date_timestamp, end_date_timestamp):
             cough_telemetry = get_daily_cough_count_telemetry(
                 thingsboard_auth_token,
                 device_id,
-                start_date_timestamp,
-                end_date_timestamp
+                start_timestamp_ms,
+                end_timestamp_ms
             )
             all_device_data[device_name] = cough_telemetry
+            print(cough_telemetry)
             print(f"  Retrieved {len(cough_telemetry)} data points")
 
             # Optionally save individual device data to CSV
@@ -119,5 +120,3 @@ def generate_cough_count_csv(start_date_timestamp, end_date_timestamp):
     # Filter out devices with no data
     devices_with_data = {k: v for k, v in all_device_data.items() if v}
     print(f"Devices with data: {len(devices_with_data)}")
-
-    return all_device_data
