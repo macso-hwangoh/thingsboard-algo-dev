@@ -8,7 +8,8 @@ import pandas as pd
 
 from src.utils.generate_cough_count_csv import generate_cough_count_csv
 from src.utils.calculate_hourly_data import calculate_hourly_data
-from src.utils.plot_data import plot_data_daily, plot_data_hourly
+from src.utils.calculate_moving_average import calculate_moving_average
+from src.utils.plot_data import plot_data_daily, plot_data_hourly, plot_data_moving_average
 
 # Retrieve project and home directory paths (required when running script without docker-compose)
 file_path = os.path.realpath(__file__)
@@ -26,8 +27,8 @@ if __name__ == "__main__":
         config = yaml.safe_load(file)
     config = attridict(config)
 
-    # Calculate time range (localized to Madrid)
-    madrid_tz = pytz.timezone("Europe/Madrid")
+    # Calculate time range
+    madrid_tz = pytz.timezone(config.time_zone)
     start_date = madrid_tz.localize(datetime(
         config.start_date_year,
         config.start_date_month,
@@ -56,9 +57,29 @@ if __name__ == "__main__":
     device_data_hourly = calculate_hourly_data(
             device_data_daily,
             start_timestamp_ms, end_timestamp_ms,
-            config.flag_debug_hourly_data)
+            config.flag_debug_hourly_data
+    )
+    device_data_moving_average = calculate_moving_average(
+            device_data_daily,
+            start_timestamp_ms, end_timestamp_ms,
+            config.window_length_hours, config.window_step_hours
+    )
 
     # Plot data
     os.makedirs("figures", exist_ok=True)
-    plot_data_daily(device_data_daily,f"figures/fig_{config.device_to_plot}_daily")
-    plot_data_hourly(device_data_hourly,f"figures/fig_{config.device_to_plot}_hourly")
+    plot_data_daily(
+            device_data_daily,
+            config.time_zone,
+            f"figures/fig_{config.device_to_plot}_daily"
+    )
+    plot_data_hourly(
+            device_data_hourly,
+            config.time_zone,
+            f"figures/fig_{config.device_to_plot}_hourly"
+    )
+    plot_data_moving_average(
+            device_data_moving_average,
+            config.time_zone,
+            config.window_length_hours, config.window_step_hours,
+            f"figures/fig_{config.device_to_plot}_moving_average"
+    )

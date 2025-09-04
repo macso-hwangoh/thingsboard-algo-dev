@@ -7,7 +7,7 @@ def calculate_hourly_data(data, start_timestamp_ms, end_timestamp_ms, flag_debug
 
     # Round the range to the top of the hour
     start_hour = start_time.replace(minute=0, second=0, microsecond=0)
-    end_hour     = end_time.replace(minute=0, second=0, microsecond=0)
+    end_hour = end_time.replace(minute=0, second=0, microsecond=0)
 
     # Dictionary to hold cumulative counts for each hour
     hourly_counts = {}

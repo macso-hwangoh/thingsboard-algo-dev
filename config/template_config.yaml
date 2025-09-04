@@ -1,16 +1,21 @@
 # Options
 flag_fetch_data: True
 device_to_plot: 15
+time_zone: "Europe/Madrid"
 flag_debug_hourly_data: False
 
 # Time Window
-start_date_day: 11
-start_date_month: 8
+start_date_day: 24
+start_date_month: 6
 start_date_year: 2025
 start_date_hour: 0
 start_date_minute: 0
-end_date_day: 12
-end_date_month: 8
+end_date_day: 10
+end_date_month: 7
 end_date_year: 2025
 end_date_hour: 0
 end_date_minute: 0
+
+# Moving Average
+window_length_hours: 24
+window_step_hours: 0.5
