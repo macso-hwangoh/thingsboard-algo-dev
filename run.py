@@ -1,14 +1,14 @@
 import os
 import sys
 import yaml
+import pytz
 from datetime import datetime
-import time
 import attridict
 import pandas as pd
 
 from src.utils.generate_cough_count_csv import generate_cough_count_csv
 from src.utils.calculate_hourly_data import calculate_hourly_data
-from src.utils.plot_data import plot_data
+from src.utils.plot_data import plot_data_daily, plot_data_hourly
 
 # Retrieve project and home directory paths (required when running script without docker-compose)
 file_path = os.path.realpath(__file__)
@@ -26,21 +26,22 @@ if __name__ == "__main__":
         config = yaml.safe_load(file)
     config = attridict(config)
 
-    # Calculate time range
-    start_date = datetime(
-                    config.start_date_year,
-                    config.start_date_month,
-                    config.start_date_day,
-                    config.start_date_hour,
-                    config.start_date_minute
-                )
-    end_date = datetime(
-                    config.end_date_year,
-                    config.end_date_month,
-                    config.end_date_day,
-                    config.end_date_hour,
-                    config.end_date_minute
-                )
+    # Calculate time range (localized to Madrid)
+    madrid_tz = pytz.timezone("Europe/Madrid")
+    start_date = madrid_tz.localize(datetime(
+        config.start_date_year,
+        config.start_date_month,
+        config.start_date_day,
+        config.start_date_hour,
+        config.start_date_minute
+    ))
+    end_date = madrid_tz.localize(datetime(
+        config.end_date_year,
+        config.end_date_month,
+        config.end_date_day,
+        config.end_date_hour,
+        config.end_date_minute
+    ))
     start_timestamp_ms = int(start_date.timestamp() * 1000)
     end_timestamp_ms = int(end_date.timestamp() * 1000)
 
@@ -51,11 +52,13 @@ if __name__ == "__main__":
 
     # Compute data for specific device
     device_data_df = pd.read_csv(f"device_data/Virbac-ai-{config.device_to_plot}_cough_telemetry.csv")
-    device_data_dict = device_data_df.to_dict(orient="records")
+    device_data_daily = device_data_df.to_dict(orient="records")
     device_data_hourly = calculate_hourly_data(
-            device_data_dict,
+            device_data_daily,
             start_timestamp_ms, end_timestamp_ms,
             config.flag_debug_hourly_data)
 
+    # Plot data
     os.makedirs("figures", exist_ok=True)
-    plot_data(config.device_to_plot)
+    plot_data_daily(device_data_daily,f"figures/fig_{config.device_to_plot}_daily")
+    plot_data_hourly(device_data_hourly,f"figures/fig_{config.device_to_plot}_hourly")

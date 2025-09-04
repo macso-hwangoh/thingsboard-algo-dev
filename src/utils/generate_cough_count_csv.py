@@ -102,7 +102,6 @@ def generate_cough_count_csv(start_timestamp_ms, end_timestamp_ms):
                 end_timestamp_ms
             )
             all_device_data[device_name] = cough_telemetry
-            print(cough_telemetry)
             print(f"  Retrieved {len(cough_telemetry)} data points")
 
             # Optionally save individual device data to CSV

@@ -1,16 +1,16 @@
 # Options
-flag_fetch_data: False
+flag_fetch_data: True
 device_to_plot: 15
 flag_debug_hourly_data: False
 
 # Time Window
-start_date_day: 27
-start_date_month: 5
+start_date_day: 11
+start_date_month: 8
 start_date_year: 2025
-start_date_hour: 8
+start_date_hour: 0
 start_date_minute: 0
-end_date_day: 27
+end_date_day: 12
 end_date_month: 8
 end_date_year: 2025
-end_date_hour: 8
+end_date_hour: 0
 end_date_minute: 0
