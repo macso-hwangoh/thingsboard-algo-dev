@@ -1,22 +1,28 @@
-# ThingsBoard Cough Data Visualization
+# thingsboard-algo-dev
 
-## Setup
+## Installation:
 
-1. **Install dependencies**:
+Create a Python virtual environment and install the requirements using:
+```
+pip install -r requirements.txt
+```
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Setup:
+1. Copy the `config/template_config.yaml` file using:
+```
+cp config/template_config.yaml config/config.yaml
+```
+2. Copy the `template_args.yaml` file using:
+```
+cp template_args.yaml args.yaml
+```
+3. Modify the arguments in `args.yaml` to specify the absolute path to your
+   `config/config.yaml` file
 
-2. **Configure ThingsBoard credentials**:
-
-   Update your ThingsBoard username and password in:
-
+4. Update your ThingsBoard username and password in:
    ```
    src/utils/get_thingsboard_auth_token.py
    ```
-
-## Usage
 
 ### Run the Main Script
 
@@ -32,15 +38,6 @@ This will:
 4. Fetch cough telemetry data for the last X days
 5. Generate interactive plots
 6. Save data to CSV files
-
-### Configure Time Range
-
-Edit the `history_in_days` variable in `run.py`:
-
-```python
-# Configuration - adjust this to change how many days back to look
-history_in_days = 200  # Change this number
-```
 
 ## Output Files
 - **`device_data/{device_name}_cough_telemetry.csv`**: Raw telemetry data for each device
