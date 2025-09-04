@@ -8,6 +8,7 @@ import pandas as pd
 from src.utils.get_thingsboard_auth_token import get_thingsboard_auth_token
 from src.utils.get_devices import get_devices
 from src.utils.get_daily_cough_count_telemetry import get_daily_cough_count_telemetry
+from src.utils.plot_data import plot_data
 
 # Retrieve project and home directory paths (required when running script without docker-compose)
 file_path = os.path.realpath(__file__)
@@ -33,11 +34,11 @@ if __name__ == "__main__":
     end_date_year = config['end_date_year']
     end_date_hour = config['end_date_hour']
     end_date_minute = config['end_date_hour']
+    device_to_plot = config['device_to_plot']
 
     # Configuration - adjust this to change how many days back to look
     history_in_days = 30
-
-    print(f"Retrieving cough data for the last {history_in_days} days...")
+    print(f"Retrieving cough data...")
 
     # Get thingsboard auth token for all future requests
     thingsboard_auth_token = get_thingsboard_auth_token()
@@ -53,19 +54,15 @@ if __name__ == "__main__":
 
     # Dictionary to store all device data
     all_device_data = {}
-
     print(f"Found {len(devices)} devices. Processing...")
 
     for i, device in enumerate(devices):
         device_name = device["name"]
         device_id = device["id"]["id"]
-
         # Filter for only Virbac devices
         if "Virbac" not in device_name:
             continue
-
         print(f"Processing device {i+1}/{len(devices)}: {device_name}")
-
         try:
             # Get cough telemetry data
             cough_telemetry = get_daily_cough_count_telemetry(
@@ -75,7 +72,6 @@ if __name__ == "__main__":
                 end_date_timestamp
             )
             all_device_data[device_name] = cough_telemetry
-
             print(f"  Retrieved {len(cough_telemetry)} data points")
 
             # Optionally save individual device data to CSV
@@ -86,14 +82,15 @@ if __name__ == "__main__":
                     f.write("ts,value\n")
                     for val in cough_telemetry:
                         f.write(f"{val['ts']},{val['value']}\n")
-
         except Exception as e:
             print(f"  Error retrieving data for {device_name}: {e}")
             all_device_data[device_name] = []
-
     print("\nData collection complete!")
 
     # Filter out devices with no data
     devices_with_data = {k: v for k, v in all_device_data.items() if v}
-
     print(f"Devices with data: {len(devices_with_data)}")
+
+    # Plot data
+    os.makedirs("figures", exist_ok=True)
+    plot_data(device_to_plot)

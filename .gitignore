@@ -8,3 +8,4 @@ args*
 /src/plot_utils/__pycache__
 
 /device_data
+/figures
