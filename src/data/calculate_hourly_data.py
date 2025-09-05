@@ -1,6 +1,31 @@
 from datetime import datetime, timedelta
 
 def calculate_hourly_data(data, start_timestamp_ms, end_timestamp_ms, flag_debug_hourly_data):
+    """
+    Calculates the cough counts per hour detected by a device along a time interval.
+    Since the 'data' dictionary only contains time stamps when coughs were
+    detected by the device, this function will work to insert timestamps with
+    'value=0' so that the interval between entries of the dictionary occurs
+    equals an hour.
+
+    The production AWS Lambda function code can be found at:
+    https://github.com/MACSO-AI/thingsboard-preemptive-alarm/
+
+    Argument/s:
+        data (dict): each entry is of form [{'ts': , 'value: }] where 'ts' and
+                    'value' are explained in the function header of
+                    src/data/generate_cough_count_csv.py
+        start_timestamp_ms (int): interval start time in milliseconds using Unix Epoch
+        end_timestamp_ms (int): interval end time in milliseconds using Unix Epoch
+        window_length_hours (int): window length to compute average in hours
+        window_step_hours (int): window step size increment in hours
+
+    Returns:
+        (dict): each entry is of form [{'ts': , 'value: }] where 'ts'
+                increments every hour and 'value' represents the
+                cough counts in the past hour.
+    """
+
     # Convert boundaries to datetimes
     start_time = datetime.fromtimestamp(start_timestamp_ms / 1000.0)
     end_time   = datetime.fromtimestamp(end_timestamp_ms   / 1000.0)

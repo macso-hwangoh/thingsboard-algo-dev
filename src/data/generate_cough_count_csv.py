@@ -76,6 +76,53 @@ def get_daily_cough_count_telemetry(auth_token, device_id, start_ts, end_ts, lim
     return telemetry
 
 def generate_cough_count_csv(start_timestamp_ms, end_timestamp_ms):
+    """
+    Pulls device telemetry from Thingsboard and saves as .csv file for each
+    device. The telemetry is pulled backwards in time from most current to least
+    current.
+
+    The .csv file has two columns: "ts" and "value":
+        ts - represents the time in milliseconds using Unix Epoch;
+             that is time since 1st of January 1970 UTC time.
+
+        value - represents the accumulated number of coughs detected within a day.
+                The summation is performed whenever a cough is detected by a device in a
+                field: therefore "value" will be decremented by one.
+                The first value per day equals the number of coughs detected
+                that day. Also, the number of rows within a day equals the
+                number of coughs detected that day. The "ts"
+                associated to "value=0" represents the beginning of each day.
+
+    For example the following snippet of a .csv file represents two days worth
+    of cough data where the first day has 7 coughs and the second has 11 coughs.
+
+    ts,value
+    1752072703742,7
+    1752059457290,6
+    1752059031662,5
+    1752059015247,4
+    1752056288636,3
+    1752052139826,2
+    1752029304185,1
+    1752019210208,0
+    1752018381352,11
+    1751993041060,10
+    1751989834591,9
+    1751984302526,8
+    1751962409446,7
+    1751956188060,6
+    1751944783737,5
+    1751939229706,4
+    1751937546044,3
+    1751935876273,2
+    1751933367335,1
+    1751932810221,0
+
+    Argument/s:
+        start_timestamp_ms (int): start time in milliseconds using Unix Epoch
+        end_timestamp_ms (int): end time in milliseconds using Unix Epoch
+    """
+
     # Get thingsboard auth token for all future requests
     thingsboard_auth_token = get_thingsboard_auth_token()
 

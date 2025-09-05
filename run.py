@@ -6,10 +6,10 @@ from datetime import datetime
 import attridict
 import pandas as pd
 
-from src.utils.generate_cough_count_csv import generate_cough_count_csv
-from src.utils.calculate_hourly_data import calculate_hourly_data
-from src.utils.calculate_moving_average import calculate_moving_average
-from src.utils.plot_data import plot_data_daily, plot_data_hourly, plot_data_moving_average
+from src.data.generate_cough_count_csv import generate_cough_count_csv
+from src.data.calculate_hourly_data import calculate_hourly_data
+from src.moving_average.calculate_moving_average import calculate_moving_average
+from src.plotting.plot_data import plot_data_daily, plot_data_hourly, plot_data_moving_average
 
 # Retrieve project and home directory paths (required when running script without docker-compose)
 file_path = os.path.realpath(__file__)
