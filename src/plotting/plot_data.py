@@ -53,9 +53,13 @@ def plot_time_series_hourly(device_time_series_hourly, time_zone, save_path):
     plt.savefig(save_path)
     print(f"Plot of time series of hourly counts saved")
 
-def plot_detections_moving_average(device_detections_moving_average, time_zone, window_length_hours, window_step_hours, save_path):
+def plot_time_series_moving_average(
+        device_time_series_moving_average, time_zone,
+        window_length_hours, window_step_hours,
+        save_path
+    ):
     # Convert to DataFrame
-    df = pd.DataFrame(device_detections_moving_average)
+    df = pd.DataFrame(device_time_series_moving_average)
 
     # Convert ms to datetime
     df['ts'] = pd.to_datetime(df['ts'], unit='ms').dt.tz_localize('UTC').dt.tz_convert(time_zone)
@@ -78,14 +82,15 @@ def plot_detections_moving_average(device_detections_moving_average, time_zone, 
     plt.savefig(save_path)
     print(f"Plot of moving averages at time of detection saved")
 
-def plot_detections_derivatives(
-        device_detections_derivatives,
+def plot_time_series_derivatives(
+        device_time_series_derivatives,
         time_zone,
         drv_window_length_hours,
         ma_window_length_hours, ma_window_step_hours,
-        save_path):
+        save_path
+    ):
     # Convert to DataFrame
-    df = pd.DataFrame(device_detections_derivatives)
+    df = pd.DataFrame(device_time_series_derivatives)
 
     # Convert ms to datetime
     df['ts'] = pd.to_datetime(df['ts'], unit='ms').dt.tz_localize('UTC').dt.tz_convert(time_zone)

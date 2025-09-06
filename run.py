@@ -12,7 +12,7 @@ from src.moving_average.calculate_moving_average import calculate_moving_average
 from src.moving_average.calculate_derivatives import calculate_derivatives
 from src.plotting.plot_data import\
         plot_detections_daily_count, plot_time_series_hourly,\
-        plot_detections_moving_average, plot_detections_derivatives
+        plot_time_series_moving_average, plot_time_series_derivatives
 
 # Retrieve project and home directory paths (required when running script without docker-compose)
 file_path = os.path.realpath(__file__)
@@ -62,13 +62,13 @@ if __name__ == "__main__":
             start_timestamp_ms, end_timestamp_ms,
             config.flag_debug_hourly_data
     )
-    device_detections_moving_average = calculate_moving_average(
+    device_time_series_moving_average = calculate_moving_average(
             device_detections_daily_count,
             start_timestamp_ms, end_timestamp_ms,
             config.ma_window_length_hours, config.ma_window_step_hours
     )
-    device_detections_derivatives = calculate_derivatives(
-            device_detections_moving_average,
+    device_time_series_derivatives = calculate_derivatives(
+            device_time_series_moving_average,
             config.drv_window_length_hours
     )
 
@@ -84,16 +84,16 @@ if __name__ == "__main__":
             config.time_zone,
             f"figures/fig_{config.device_to_plot}_time_series_hourly"
     )
-    plot_detections_moving_average(
-            device_detections_moving_average,
+    plot_time_series_moving_average(
+            device_time_series_moving_average,
             config.time_zone,
             config.ma_window_length_hours, config.ma_window_step_hours,
-            f"figures/fig_{config.device_to_plot}_detections_moving_average"
+            f"figures/fig_{config.device_to_plot}_time_series_moving_average"
     )
-    plot_detections_derivatives(
-            device_detections_derivatives,
+    plot_time_series_derivatives(
+            device_time_series_derivatives,
             config.time_zone,
             config.drv_window_length_hours,
             config.ma_window_length_hours, config.ma_window_step_hours,
-            f"figures/fig_{config.device_to_plot}_detections_derivatives"
+            f"figures/fig_{config.device_to_plot}_time_series_derivatives"
     )
