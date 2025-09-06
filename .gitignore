@@ -1,11 +1,6 @@
 /config/config*
 args*
-
-/__pycache__
-/src/.DS_Store
-/src/__pycache__
-/src/utils/__pycache__
-/src/plot_utils/__pycache__
-
+*/__pycache__
+*/.DS_Store
 /device_data
 /figures
