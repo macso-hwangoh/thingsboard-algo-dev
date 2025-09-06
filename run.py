@@ -9,6 +9,7 @@ import pandas as pd
 from src.data.generate_cough_count_csv import generate_cough_count_csv
 from src.data.calculate_hourly_data import calculate_hourly_data
 from src.moving_average.calculate_moving_average import calculate_moving_average
+from src.moving_average.calculate_derivatives import calculate_derivatives
 from src.plotting.plot_data import plot_data_daily, plot_data_hourly, plot_data_moving_average
 
 # Retrieve project and home directory paths (required when running script without docker-compose)
@@ -53,22 +54,27 @@ if __name__ == "__main__":
 
     # Compute data for specific device
     device_data_df = pd.read_csv(f"device_data/Virbac-ai-{config.device_to_plot}_cough_telemetry.csv")
-    device_data_daily = device_data_df.to_dict(orient="records")
+    device_data_daily_sum = device_data_df.to_dict(orient="records")
     device_data_hourly = calculate_hourly_data(
-            device_data_daily,
+            device_data_daily_sum,
             start_timestamp_ms, end_timestamp_ms,
             config.flag_debug_hourly_data
     )
     device_data_moving_average = calculate_moving_average(
-            device_data_daily,
+            device_data_daily_sum,
             start_timestamp_ms, end_timestamp_ms,
-            config.window_length_hours, config.window_step_hours
+            config.ma_window_length_hours, config.ma_window_step_hours
+    )
+    device_data_moving_average = calculate_derivatives(
+            device_data_moving_average,
+            start_timestamp_ms, end_timestamp_ms,
+            config.ma_window_length_hours, config.ma_window_step_hours
     )
 
     # Plot data
     os.makedirs("figures", exist_ok=True)
     plot_data_daily(
-            device_data_daily,
+            device_data_daily_sum,
             config.time_zone,
             f"figures/fig_{config.device_to_plot}_daily"
     )

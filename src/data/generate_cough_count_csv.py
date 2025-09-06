@@ -81,7 +81,7 @@ def generate_cough_count_csv(start_timestamp_ms, end_timestamp_ms):
     device. The telemetry is pulled backwards in time from most current to least
     current.
 
-    The .csv file has two columns: "ts" and "value":
+    The generated .csv file has two columns: "ts" and "value":
         ts - represents the time in milliseconds using Unix Epoch;
              that is time since 1st of January 1970 UTC time.
 

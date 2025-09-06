@@ -1,74 +1,57 @@
-import plotly.graph_objs as go
 from datetime import datetime, timedelta
 
-def calculate_derivative(data, threshold, threshold_barn, interval_hours=3):
-    new_data = []
+def calculate_derivatives(device_data_moving_average, drv_window_length_hours):
+    """
+    Calculates the finite difference of the moving average of cough counts
+    in a window of specified length.
+    Specifically, it subtracts the values of the end of the window
+    from the beginning. Since this function increments along the entries of
+    device_data_daily_sum, it inherits the window shift from
+    config.ma_window_step_hours. Therefore, this function computes the
+    difference of the value at the end of the moving average window
+    and some intermediate value within the moving average window specified by
+    the argument window_length in this function.
 
-    for trace in data.copy():
-        print(trace)
-        total_threshold_triggers = 0
-        y_diff = []  # We'll calculate differences for all points
-        y_values = list(trace['y'])
-        x_values = list(trace['x'])
-        interval = timedelta(hours=interval_hours)
+    The production AWS Lambda function code can be found at:
+    https://github.com/MACSO-AI/thingsboard-preemptive-alarm/
 
-        # Ensure that x_values are datetime objects
-        if isinstance(x_values[0], str):
-            x_values = [datetime.fromisoformat(x) for x in x_values]
-        elif not isinstance(x_values[0], datetime):
-            raise TypeError("x_values must be in datetime format or ISO string format.")
+    Argument/s:
+        device_data_moving_average (list): each entry is a dictionary of the form
+                                           {'ts': , 'value: } where 'ts' and
+                                           'value' are explained in the function header of
+                                           src/data/calculate_moving_average.py
+        drv_window_length_hours (int): window length in hours
 
-        # Lists for special markers
-        special_x = []
-        special_y = []
+    Returns:
+        (list): each entry is of form [{'ts': , 'value: }] where 'ts'
+                is incremented matching device_data_daily_sum and
+                'value' represents the finite difference between
+                the last value and first value of the window
+    """
+    # # Convert to milliseconds
+    # one_hour_in_milliseconds = 60 * 60 * 1000
+    # drv_window_length_ms = drv_window_length_hours * one_hour_in_milliseconds
 
-        # Calculate the derivative using the value from interval_hours earlier
-        for i in range(len(y_values)):
-            # Look for the point that is interval_hours before the current one
-            target_time = x_values[i] - interval
-            previous_value = None
+    # derivatives = [];
+    # for item in device_data_moving_average:
+    #     # Find the moving average value at beginning of window
+    #     previous_ts
+    #     flag_previous_data_point_too_early = True
+    #     while flag_previous_data_point_too_early:
+    #         if (item['ts'] - previous_ts >= drv_window_length_ms) {
+    #             previous = movingAverageData[j];
+    #             break;
+    #         }
 
-            # Find the value at target_time, if it exists
-            for j in range(i):
-                if x_values[j] <= target_time:
-                    previous_value = y_values[j]
+    #         # If we found a valid data point from 3 hours ago, calculate the derivative
+    #         if (previous)
+    #             const previousValue = Object.values(previous.values)[0];
+    #             const currentValue = Object.values(current.values)[0];
 
-            deriv_val = 0
+    #             const rateOfChange = currentValue - previousValue;
+    #             derivatives.push({
+    #                 ts: current.ts,
+    #                 values: { [`${deviceName}-derivative-${label}`]: rateOfChange },
+    #             });
 
-            # If we found a previous value, calculate the difference
-            if previous_value is not None:
-                deriv_val = y_values[i] - previous_value
-
-            y_diff.append(deriv_val)
-
-            threshold_val = threshold
-            if "barn_a" in trace["name"] or "barn_b" in trace["name"]:
-                threshold_val = threshold_barn
-
-            if deriv_val >= threshold_val:
-                total_threshold_triggers += 1
-                # Save this point for the special marker trace
-                special_x.append(x_values[i])
-                special_y.append(deriv_val)
-
-        derivative_trace = go.Scatter(
-            x=[x.isoformat() for x in x_values],
-            y=y_diff,
-            mode='lines+markers',
-            name=f"{trace['name']} (Derivative)"
-        )
-
-        special_marker_trace = go.Scatter(
-            x=[x.isoformat() for x in special_x],
-            y=special_y,
-            mode='markers',
-            marker=dict(color='red', size=10, symbol='star'),
-            name=f"{trace['name']} (Threshold Exceeded)"
-        )
-
-        new_data.append(derivative_trace)
-        new_data.append(special_marker_trace)
-
-        print("Threshold for " + trace["name"] + ": " + str(total_threshold_triggers))
-
-    return new_data
+    # return derivatives;

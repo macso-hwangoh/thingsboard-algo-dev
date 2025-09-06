@@ -17,5 +17,9 @@ end_date_hour: 0
 end_date_minute: 0
 
 # Moving Average
-window_length_hours: 24
-window_step_hours: 0.5
+ma_window_length_hours: 24
+ma_window_step_hours: 0.5
+
+# Moving Average
+drv_window_length_hours: 24
+drv_window_step_hours: 0.5
