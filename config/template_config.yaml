@@ -20,6 +20,6 @@ end_date_minute: 0
 ma_window_length_hours: 24
 ma_window_step_hours: 0.5
 
-# Moving Average
-drv_window_length_hours: 24
-drv_window_step_hours: 0.5
+# Derivative
+drv_window_length_hours: 3
+drv_threshold: 6
