@@ -10,7 +10,7 @@ from src.data.generate_cough_count_csv import generate_cough_count_csv
 from src.data.calculate_hourly_data import calculate_hourly_data
 from src.moving_average.calculate_moving_average import calculate_moving_average
 from src.moving_average.calculate_derivatives import calculate_derivatives
-from src.plotting.plot_data import plot_data_daily, plot_data_hourly, plot_data_moving_average
+from src.plotting.plot_data import plot_data_daily, plot_data_hourly, plot_data_moving_average, plot_data_derivatives
 
 # Retrieve project and home directory paths (required when running script without docker-compose)
 file_path = os.path.realpath(__file__)
@@ -65,10 +65,9 @@ if __name__ == "__main__":
             start_timestamp_ms, end_timestamp_ms,
             config.ma_window_length_hours, config.ma_window_step_hours
     )
-    device_data_moving_average = calculate_derivatives(
+    device_data_derivatives = calculate_derivatives(
             device_data_moving_average,
-            start_timestamp_ms, end_timestamp_ms,
-            config.ma_window_length_hours, config.ma_window_step_hours
+            config.drv_window_length_hours
     )
 
     # Plot data
@@ -86,6 +85,13 @@ if __name__ == "__main__":
     plot_data_moving_average(
             device_data_moving_average,
             config.time_zone,
-            config.window_length_hours, config.window_step_hours,
+            config.ma_window_length_hours, config.ma_window_step_hours,
             f"figures/fig_{config.device_to_plot}_moving_average"
+    )
+    plot_data_derivatives(
+            device_data_derivatives,
+            config.time_zone,
+            config.drv_window_length_hours,
+            config.ma_window_length_hours, config.ma_window_step_hours,
+            f"figures/fig_{config.device_to_plot}_derivatives"
     )

@@ -23,35 +23,34 @@ def calculate_derivatives(device_data_moving_average, drv_window_length_hours):
         drv_window_length_hours (int): window length in hours
 
     Returns:
-        (list): each entry is of form [{'ts': , 'value: }] where 'ts'
+        (list): each entry is a dictionary of form
+                [{'ts': , 'value: }] where 'ts'
                 is incremented matching device_data_daily_sum and
                 'value' represents the finite difference between
                 the last value and first value of the window
     """
-    # # Convert to milliseconds
-    # one_hour_in_milliseconds = 60 * 60 * 1000
-    # drv_window_length_ms = drv_window_length_hours * one_hour_in_milliseconds
+    # Convert to milliseconds
+    one_hour_in_milliseconds = 60 * 60 * 1000
+    drv_window_length_ms = drv_window_length_hours * one_hour_in_milliseconds
 
-    # derivatives = [];
-    # for item in device_data_moving_average:
-    #     # Find the moving average value at beginning of window
-    #     previous_ts
-    #     flag_previous_data_point_too_early = True
-    #     while flag_previous_data_point_too_early:
-    #         if (item['ts'] - previous_ts >= drv_window_length_ms) {
-    #             previous = movingAverageData[j];
-    #             break;
-    #         }
+    derivatives = [];
+    for i, item in enumerate(device_data_moving_average[:-1]):
+        # Find the moving average value at beginning of window.
+        # Note that device_data_moving_average is ordered backwards in time.
+        j=i
+        previous_ts = device_data_moving_average[j+1]['ts']
+        previous_value = device_data_moving_average[j+1]['value']
+        while (item['ts'] - previous_ts >= drv_window_length_ms):
+            print(item['ts'] - previous_ts)
+            j += 1
+            previous_ts = device_data_moving_average[j]['ts']
+            previous_value = device_data_moving_average[j]['value']
 
-    #         # If we found a valid data point from 3 hours ago, calculate the derivative
-    #         if (previous)
-    #             const previousValue = Object.values(previous.values)[0];
-    #             const currentValue = Object.values(current.values)[0];
+        # calculate the derivative
+        finite_difference = item['value'] - previous_value
+        derivatives.append({
+            'ts': item['ts'],
+            'value': finite_difference
+        })
 
-    #             const rateOfChange = currentValue - previousValue;
-    #             derivatives.push({
-    #                 ts: current.ts,
-    #                 values: { [`${deviceName}-derivative-${label}`]: rateOfChange },
-    #             });
-
-    # return derivatives;
+    return derivatives
