@@ -2,7 +2,7 @@ import time
 from datetime import datetime, timedelta
 
 def calculate_moving_average(
-        device_data_daily_sum,
+        device_detections_daily_count,
         start_timestamp_ms, end_timestamp_ms,
         ma_window_length_hours, ma_window_step_hours
     ):
@@ -16,7 +16,7 @@ def calculate_moving_average(
     https://github.com/MACSO-AI/thingsboard-preemptive-alarm/
 
     Argument/s:
-        device_data_daily_sum (list): each entry is a dictionary of form
+        device_detections_daily_count (list): each entry is a dictionary of form
                                       [{'ts': , 'value: }] where 'ts' and
                                       'value' are explained in the function header of
                                       src/data/generate_cough_count_csv.py
@@ -49,7 +49,7 @@ def calculate_moving_average(
         window_end = ts
 
         # Count "Cough" occurrences within the window
-        for item in device_data_daily_sum:
+        for item in device_detections_daily_count:
             item_ts = int(item['ts'])
             if window_start <= item_ts <= window_end:
                 cough_count += 1

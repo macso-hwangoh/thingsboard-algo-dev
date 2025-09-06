@@ -1,22 +1,22 @@
 from datetime import datetime, timedelta
 
-def calculate_hourly_data(
-        device_data_daily_sum,
+def generate_time_series_hourly(
+        device_detections_daily_count,
         start_timestamp_ms, end_timestamp_ms,
         flag_debug_hourly_data
     ):
     """
-    Calculates the cough counts per hour detected by a device along a time interval.
-    Since the 'device_data_daily_sum' dictionary only contains entries when coughs were
-    detected by the device, this function will work to insert timestamps with
-    'value=0' so that the interval between entries of the dictionary occurs
-    equals an hour.
+    Generates cough counts per hour time series by a device along a uniform time interval.
+    To elaborate, since the 'device_detections_daily_count' dictionary only
+    contains entries when coughs were detected by the device, this function will
+    work to insert timestamps with 'value=0' so that the interval between
+    entries of the dictionary occurs equals an hour.
 
     The production AWS Lambda function code can be found at:
     https://github.com/MACSO-AI/thingsboard-preemptive-alarm/
 
     Argument/s:
-        device_data_daily_sum (dict): each entry is of form [{'ts': , 'value: }] where 'ts' and
+        device_detections_daily_count (dict): each entry is of form [{'ts': , 'value: }] where 'ts' and
                                       'value' are explained in the function header of
                                       src/data/generate_cough_count_csv.py
         start_timestamp_ms (int): interval start time in milliseconds using Unix Epoch
@@ -43,7 +43,7 @@ def calculate_hourly_data(
     hourly_counts = {}
 
     # Round each timestamp in data to the nearest hour and accumulate count
-    for item in device_data_daily_sum:
+    for item in device_detections_daily_count:
         item_ts = int(item['ts']) / 1000  # Convert milliseconds to seconds
         item_dt = datetime.fromtimestamp(item_ts)
         if start_time <= item_dt <= end_time: # Ensure the timestamp is within the desired range

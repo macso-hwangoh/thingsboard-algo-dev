@@ -7,10 +7,12 @@ import attridict
 import pandas as pd
 
 from src.data.generate_cough_count_csv import generate_cough_count_csv
-from src.data.calculate_hourly_data import calculate_hourly_data
+from src.data.generate_time_series import generate_time_series_hourly
 from src.moving_average.calculate_moving_average import calculate_moving_average
 from src.moving_average.calculate_derivatives import calculate_derivatives
-from src.plotting.plot_data import plot_data_daily, plot_data_hourly, plot_data_moving_average, plot_data_derivatives
+from src.plotting.plot_data import\
+        plot_detections_daily_count, plot_time_series_hourly,\
+        plot_detections_moving_average, plot_detections_derivatives
 
 # Retrieve project and home directory paths (required when running script without docker-compose)
 file_path = os.path.realpath(__file__)
@@ -53,45 +55,45 @@ if __name__ == "__main__":
         generate_cough_count_csv(start_timestamp_ms, end_timestamp_ms)
 
     # Compute data for specific device
-    device_data_df = pd.read_csv(f"device_data/Virbac-ai-{config.device_to_plot}_cough_telemetry.csv")
-    device_data_daily_sum = device_data_df.to_dict(orient="records")
-    device_data_hourly = calculate_hourly_data(
-            device_data_daily_sum,
+    device_detections_daily_count_df = pd.read_csv(f"device_data/Virbac-ai-{config.device_to_plot}_cough_telemetry.csv")
+    device_detections_daily_count = device_detections_daily_count_df.to_dict(orient="records")
+    device_time_series_hourly = generate_time_series_hourly(
+            device_detections_daily_count,
             start_timestamp_ms, end_timestamp_ms,
             config.flag_debug_hourly_data
     )
-    device_data_moving_average = calculate_moving_average(
-            device_data_daily_sum,
+    device_detections_moving_average = calculate_moving_average(
+            device_detections_daily_count,
             start_timestamp_ms, end_timestamp_ms,
             config.ma_window_length_hours, config.ma_window_step_hours
     )
-    device_data_derivatives = calculate_derivatives(
-            device_data_moving_average,
+    device_detections_derivatives = calculate_derivatives(
+            device_detections_moving_average,
             config.drv_window_length_hours
     )
 
     # Plot data
     os.makedirs("figures", exist_ok=True)
-    plot_data_daily(
-            device_data_daily_sum,
+    plot_detections_daily_count(
+            device_detections_daily_count,
             config.time_zone,
-            f"figures/fig_{config.device_to_plot}_daily"
+            f"figures/fig_{config.device_to_plot}_detections_daily"
     )
-    plot_data_hourly(
-            device_data_hourly,
+    plot_time_series_hourly(
+            device_time_series_hourly,
             config.time_zone,
-            f"figures/fig_{config.device_to_plot}_hourly"
+            f"figures/fig_{config.device_to_plot}_time_series_hourly"
     )
-    plot_data_moving_average(
-            device_data_moving_average,
+    plot_detections_moving_average(
+            device_detections_moving_average,
             config.time_zone,
             config.ma_window_length_hours, config.ma_window_step_hours,
-            f"figures/fig_{config.device_to_plot}_moving_average"
+            f"figures/fig_{config.device_to_plot}_detections_moving_average"
     )
-    plot_data_derivatives(
-            device_data_derivatives,
+    plot_detections_derivatives(
+            device_detections_derivatives,
             config.time_zone,
             config.drv_window_length_hours,
             config.ma_window_length_hours, config.ma_window_step_hours,
-            f"figures/fig_{config.device_to_plot}_derivatives"
+            f"figures/fig_{config.device_to_plot}_detections_derivatives"
     )

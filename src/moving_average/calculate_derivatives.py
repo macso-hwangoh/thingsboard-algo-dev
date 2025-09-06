@@ -6,7 +6,7 @@ def calculate_derivatives(device_data_moving_average, drv_window_length_hours):
     in a window of specified length.
     Specifically, it subtracts the values of the end of the window
     from the beginning. Since this function increments along the entries of
-    device_data_daily_sum, it inherits the window shift from
+    device_detections_daily_count, it inherits the window shift from
     config.ma_window_step_hours. Therefore, this function computes the
     difference of the value at the end of the moving average window
     and some intermediate value within the moving average window specified by
@@ -25,7 +25,7 @@ def calculate_derivatives(device_data_moving_average, drv_window_length_hours):
     Returns:
         (list): each entry is a dictionary of form
                 [{'ts': , 'value: }] where 'ts'
-                is incremented matching device_data_daily_sum and
+                is incremented matching device_detections_daily_count and
                 'value' represents the finite difference between
                 the last value and first value of the window
     """

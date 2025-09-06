@@ -3,15 +3,16 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pytz
 
-def plot_data_daily(device_data_daily_sum, time_zone, save_path):
+def plot_detections_daily_count(device_detections_daily_count, time_zone, save_path):
     # Convert to DataFrame
-    df = pd.DataFrame(device_data_daily_sum)
+    df = pd.DataFrame(device_detections_daily_count)
 
    # Convert ts (milliseconds) to datetime
     df['ts'] = pd.to_datetime(df['ts'], unit='ms').dt.tz_localize('UTC').dt.tz_convert(time_zone)
 
     # Plot
     fig, ax = plt.subplots(figsize=(12,6))
+    plt.title(f"Daily cough counts at time of detection")
     ax.plot(df['ts'], df['value'], color='orchid', linewidth=2)
 
     # Axis formatting
@@ -25,17 +26,18 @@ def plot_data_daily(device_data_daily_sum, time_zone, save_path):
 
     plt.tight_layout()
     plt.savefig(save_path)
-    print(f"Plot of daily counts saved")
+    print(f"Plot of daily counts at time of detection saved")
 
-def plot_data_hourly(device_data_hourly, time_zone, save_path):
+def plot_time_series_hourly(device_time_series_hourly, time_zone, save_path):
     # Convert to DataFrame
-    df = pd.DataFrame(device_data_hourly)
+    df = pd.DataFrame(device_time_series_hourly)
 
     # Convert ms to datetime
     df['ts'] = pd.to_datetime(df['ts'], unit='ms').dt.tz_localize('UTC').dt.tz_convert(time_zone)
 
     # Plot
     fig, ax = plt.subplots(figsize=(12,6))
+    plt.title(f"Time series of cough counts per hour")
     ax.plot(df['ts'], df['value'], color='orchid', linewidth=2)
 
     # Axis formatting
@@ -49,18 +51,18 @@ def plot_data_hourly(device_data_hourly, time_zone, save_path):
 
     plt.tight_layout()
     plt.savefig(save_path)
-    print(f"Plot of hourly counts saved")
+    print(f"Plot of time series of hourly counts saved")
 
-def plot_data_moving_average(device_data_moving_average, time_zone, window_length_hours, window_step_hours, save_path):
+def plot_detections_moving_average(device_detections_moving_average, time_zone, window_length_hours, window_step_hours, save_path):
     # Convert to DataFrame
-    df = pd.DataFrame(device_data_moving_average)
+    df = pd.DataFrame(device_detections_moving_average)
 
     # Convert ms to datetime
     df['ts'] = pd.to_datetime(df['ts'], unit='ms').dt.tz_localize('UTC').dt.tz_convert(time_zone)
 
     # Plot
     fig, ax = plt.subplots(figsize=(12,6))
-    plt.title(f"Moving average. Window length: {window_length_hours} hours. Window step: {window_step_hours} hours.")
+    plt.title(f"Moving average at time of detection.\n Window length: {window_length_hours} hours. Window step: {window_step_hours} hours.")
     ax.plot(df['ts'], df['value'], color='orchid', linewidth=2)
 
     # Axis formatting
@@ -74,23 +76,23 @@ def plot_data_moving_average(device_data_moving_average, time_zone, window_lengt
 
     plt.tight_layout()
     plt.savefig(save_path)
-    print(f"Plot of moving averages saved")
+    print(f"Plot of moving averages at time of detection saved")
 
-def plot_data_derivatives(
-        device_data_derivatives,
+def plot_detections_derivatives(
+        device_detections_derivatives,
         time_zone,
         drv_window_length_hours,
         ma_window_length_hours, ma_window_step_hours,
         save_path):
     # Convert to DataFrame
-    df = pd.DataFrame(device_data_derivatives)
+    df = pd.DataFrame(device_detections_derivatives)
 
     # Convert ms to datetime
     df['ts'] = pd.to_datetime(df['ts'], unit='ms').dt.tz_localize('UTC').dt.tz_convert(time_zone)
 
     # Plot
     fig, ax = plt.subplots(figsize=(12,6))
-    plt.title(f"Derivative. Window length: {drv_window_length_hours} hours.\n Moving average. Window length: {ma_window_length_hours} hours.  Window step: {ma_window_step_hours} hours.")
+    plt.title(f"Derivatives at time of detection.\n Window length: {drv_window_length_hours} hours.\n Moving average. Window length: {ma_window_length_hours} hours.  Window step: {ma_window_step_hours} hours.")
     ax.plot(df['ts'], df['value'], color='orchid', linewidth=2)
 
     # Axis formatting
@@ -104,4 +106,4 @@ def plot_data_derivatives(
 
     plt.tight_layout()
     plt.savefig(save_path)
-    print(f"Plot of derivatives saved")
+    print(f"Plot of derivatives at time of detection saved")
